@@ -1,0 +1,178 @@
+import { useState } from 'react';
+
+// Componente principal da aplicação
+const App = () => {
+  // Estado para armazenar as credenciais do usuário
+  const [accountName, setAccountName] = useState('');
+  const [containerName, setContainerName] = useState('');
+  const [sasToken, setSasToken] = useState('');
+  // Estado para a mensagem de status (feedback para o usuário)
+  const [statusMessage, setStatusMessage] = useState('Por favor, insira a URL do seu backend.');
+  const [messageColor, setMessageColor] = useState('text-gray-700');
+  // Estado para o histórico do chat
+  const [chatHistory, setChatHistory] = useState([]);
+  // Estado para a mensagem atual do usuário
+  const [currentMessage, setCurrentMessage] = useState('');
+  // Estado para a URL do backend
+  const [backendUrl, setBackendUrl] = useState('');
+
+  // Simula o envio de dados para o backend
+  const handleSendMessage = async (event) => {
+    event.preventDefault();
+
+    if (!currentMessage) {
+      setStatusMessage('A mensagem não pode estar vazia.');
+      setMessageColor('text-red-600');
+      return;
+    }
+
+    if (!backendUrl) {
+      setStatusMessage('Por favor, insira a URL do backend do Cloud Run para continuar.');
+      setMessageColor('text-red-600');
+      return;
+    }
+
+    // Adiciona a mensagem do usuário ao histórico
+    setChatHistory(prev => [...prev, { sender: 'user', text: currentMessage }]);
+    setCurrentMessage(''); // Limpa o campo de entrada
+
+    try {
+      
+      const response = await fetch(`${backendUrl}/ask`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: currentMessage,
+          azureCredentials: {
+            accountName: accountName,
+            containerName: containerName,
+            sasToken: sasToken,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erro do servidor: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      
+      // Adiciona a resposta do agente ao histórico
+      setChatHistory(prev => [...prev, { sender: 'agent', text: data.response }]);
+      setStatusMessage('Comunicação com o agente bem-sucedida!');
+      setMessageColor('text-green-600');
+
+    } catch (error) {
+      console.error("Erro ao comunicar com o backend:", error);
+      setStatusMessage(`Erro: Não foi possível conectar com o agente. Detalhes: ${error.message}`);
+      setMessageColor('text-red-600');
+      setChatHistory(prev => [...prev, { sender: 'agent', text: 'Desculpe, não consegui processar a sua solicitação. Verifique se o backend está rodando.' }]);
+    }
+  };
+
+  // Renderiza a interface
+  return (
+    <div className="bg-gray-100 min-h-screen p-4 flex flex-col items-center font-sans antialiased">
+      <div className="w-full max-w-lg bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Agente de Análise de Projetos</h1>
+        <p className="text-gray-600 text-center mb-8">
+          Converse com o agente para analisar dados. Insira suas credenciais do Azure para começar.
+        </p>
+
+        {/* Formulário para a URL do backend */}
+        <div className="space-y-6 mb-8 border p-4 rounded-lg bg-gray-50">
+          <h2 className="text-lg font-semibold text-gray-700">URL do Backend</h2>
+          <div>
+            <label htmlFor="backendUrl" className="block text-gray-700 font-medium mb-1">URL do Cloud Run</label>
+            <input
+              type="text"
+              id="backendUrl"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              value={backendUrl}
+              onChange={(e) => setBackendUrl(e.target.value)}
+              placeholder="https://virtualagent-1078365031012.europe-west10.run.app"
+            />
+          </div>
+        </div>
+
+        {/* Formulário para credenciais do Azure */}
+        <div className="space-y-6 mb-8 border p-4 rounded-lg bg-gray-50">
+          <h2 className="text-lg font-semibold text-gray-700">Credenciais do Azure</h2>
+          <div>
+            <label htmlFor="accountName" className="block text-gray-700 font-medium mb-1">Conta de Armazenamento</label>
+            <input
+              type="text"
+              id="accountName"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              value={accountName}
+              onChange={(e) => setAccountName(e.target.value)}
+              placeholder="Nome da sua conta de armazenamento"
+            />
+          </div>
+          <div>
+            <label htmlFor="containerName" className="block text-gray-700 font-medium mb-1">Nome do Container</label>
+            <input
+              type="text"
+              id="containerName"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              value={containerName}
+              onChange={(e) => setContainerName(e.target.value)}
+              placeholder="Nome do seu container"
+            />
+          </div>
+          <div>
+            <label htmlFor="sasToken" className="block text-gray-700 font-medium mb-1">Token SAS</label>
+            <input
+              type="text"
+              id="sasToken"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              value={sasToken}
+              onChange={(e) => setSasToken(e.target.value)}
+              placeholder="?sv=...&sig=..."
+            />
+          </div>
+        </div>
+
+        {/* Histórico do chat */}
+        <div className="bg-white border border-gray-300 rounded-lg p-4 h-80 overflow-y-auto mb-6 flex flex-col-reverse">
+          {[...chatHistory].reverse().map((msg, index) => (
+            <div key={index} className={`mb-4 flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div className={`p-3 rounded-xl max-w-[80%] ${msg.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}>
+                <p>{msg.text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Formulário de chat */}
+        <form onSubmit={handleSendMessage} className="flex space-x-2">
+          <input
+            type="text"
+            className="flex-grow px-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500"
+            value={currentMessage}
+            onChange={(e) => setCurrentMessage(e.target.value)}
+            placeholder="Digite sua mensagem aqui..."
+          />
+          <button
+            type="submit"
+            className="bg-blue-600 text-white font-bold py-2 px-6 rounded-full hover:bg-blue-700 transition-colors duration-200"
+            aria-label="Enviar mensagem"
+          >
+            Enviar
+          </button>
+        </form>
+        
+        {/* Mensagem de status */}
+        {statusMessage && (
+          <div className="mt-4 text-center">
+            <p className={`font-semibold ${messageColor}`}>{statusMessage}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default App;
