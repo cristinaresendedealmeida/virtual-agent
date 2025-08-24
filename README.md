@@ -2,6 +2,9 @@
 
 This project is a virtual agent with artificial intelligence technology, designed to analyze data from social projects stored in an Azure Blob Storage container. It uses the Gemini model to interpret natural language requests and execute data analysis functions, providing insights into the financial viability and social return of early childhood education initiatives.
 
+<img width="1919" height="823" alt="image" src="https://github.com/user-attachments/assets/eb032cf8-948b-4966-bb95-ecd5c36a5056" />
+
+
 ## Technologies Used
 
 The project consists of two main components: the backend (hosted on Google Cloud Run) and the frontend (a static web application).
