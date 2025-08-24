@@ -31,6 +31,10 @@ requirements.txt: Lists the necessary Python dependencies for the backend.
 Dockerfile: Instructions for creating the Docker image of the backend application.
 .env: File to securely store the Google API key (should not be uploaded to GitHub).
 
+
+## How to Run
+
+
 ### How to Run (Locally)
 
 
