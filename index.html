@@ -24,7 +24,7 @@
           const [accountName, setAccountName] = useState('');
           const [containerName, setContainerName] = useState('');
           const [sasToken, setSasToken] = useState('');
-          const [statusMessage, setStatusMessage] = useState('Please enter your backend URL.');
+          const [statusMessage, setStatusMessage] = useState('Please enter your Azure credentials.');
           const [messageColor, setMessageColor] = useState('text-gray-700');
           const [chatHistory, setChatHistory] = useState([]);
           const [currentMessage, setCurrentMessage] = useState('');
@@ -40,15 +40,11 @@
               setMessageColor('text-red-600');
               return;
             }
-
-            if (!backendUrl) {
-              setStatusMessage('Please enter the Cloud Run backend URL to continue.');
-              setMessageColor('text-red-600');
-              return;
-            }
             
             setChatHistory(prev => [...prev, { sender: 'user', text: currentMessage }]);
             setCurrentMessage('');
+            setStatusMessage('Waiting for agent response...');
+            setMessageColor('text-blue-600');
 
             try {
               const response = await fetch(`${backendUrl}/ask`, {
@@ -78,7 +74,7 @@
 
             } catch (error) {
               console.error("Error communicating with backend:", error);
-              setStatusMessage(`Error: Could not connect to the agent. Details: ${error.message}`);
+              setStatusMessage(`Error: Could not connect to the agent. Details: ${error.message}. Please verify the URL or try again later.`);
               setMessageColor('text-red-600');
               setChatHistory(prev => [...prev, { sender: 'agent', text: 'Sorry, I could not process your request. Please check if the backend is running.' }]);
             }
@@ -174,3 +170,4 @@
     </script>
 </body>
 </html>
+
