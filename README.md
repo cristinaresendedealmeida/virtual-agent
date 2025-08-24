@@ -1,8 +1,12 @@
-Virtual Agent for Social Project Analysis
+## Virtual Agent for Social Project Analysis
+
 This project is a virtual agent with artificial intelligence technology, designed to analyze data from social projects stored in an Azure Blob Storage container. It uses the Gemini model to interpret natural language requests and execute data analysis functions, providing insights into the financial viability and social return of early childhood education initiatives.
-Technologies Used
+
+## Technologies Used
+
 The project consists of two main components: the backend (hosted on Google Cloud Run) and the frontend (a static web application).
-Backend
+
+# Backend
 Python 3.9: Main programming language.
 Flask: Web microframework to create the API that receives requests from the frontend.
 Google Gemini API: Used for conversational capabilities and tool execution.
