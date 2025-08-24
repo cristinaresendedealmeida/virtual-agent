@@ -33,35 +33,42 @@ Dockerfile: Instructions for creating the Docker image of the backend applicatio
 
 ### How to Run (Locally)
 
+
 #### Clone the repository:
 git clone https://github.com/your-username/your-repository.git
 cd your-repository
 
 
-Create the virtual environment and install dependencies:
+#### Create the virtual environment and install dependencies:
 python -m venv venv
 source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
 pip install -r requirements.txt
 
 
-Create a .env file:
+#### Create a .env file:
 Create a .env file in the project root and add your Google API key.
 GOOGLE_API_KEY=YOUR_KEY_HERE
 
 
-Run the backend:
+#### Run the backend:
 python app.py
 
 
 The server will be running at http://localhost:8080.
-How to Deploy on Google Cloud Run
-Install the Google Cloud SDK: Follow the official Google instructions.
-Authenticate:
+
+
+### How to Deploy on Google Cloud Run
+
+
+#### Install the Google Cloud SDK: 
+Follow the official Google instructions.
+
+#### Authenticate:
 gcloud auth login
 gcloud config set project YOUR_PROJECT_ID
 
 
-Deploy the service:
+#### Deploy the service:
 gcloud run deploy virtualagent --source . --region=europe-west10
 
 
