@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agente de Análise de Projetos</title>
+    <title>Project Analysis Agent</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -24,25 +24,25 @@
           const [accountName, setAccountName] = useState('');
           const [containerName, setContainerName] = useState('');
           const [sasToken, setSasToken] = useState('');
-          const [statusMessage, setStatusMessage] = useState('Por favor, insira a URL do seu backend.');
+          const [statusMessage, setStatusMessage] = useState('Please enter your backend URL.');
           const [messageColor, setMessageColor] = useState('text-gray-700');
           const [chatHistory, setChatHistory] = useState([]);
           const [currentMessage, setCurrentMessage] = useState('');
           
-          // POR FAVOR, SUBSTITUA A URL ABAIXO PELA SUA URL DO CLOUD RUN
+          // Your Cloud Run URL is now hardcoded.
           const backendUrl = 'https://virtualagent-1078365031012.europe-west10.run.app';
 
           const handleSendMessage = async (event) => {
             event.preventDefault();
 
             if (!currentMessage) {
-              setStatusMessage('A mensagem não pode estar vazia.');
+              setStatusMessage('Message cannot be empty.');
               setMessageColor('text-red-600');
               return;
             }
 
-            if (!backendUrl || backendUrl === 'SUA_URL_DO_CLOUD_RUN') {
-              setStatusMessage('Por favor, insira a URL do backend do Cloud Run para continuar.');
+            if (!backendUrl) {
+              setStatusMessage('Please enter the Cloud Run backend URL to continue.');
               setMessageColor('text-red-600');
               return;
             }
@@ -67,74 +67,58 @@
               });
 
               if (!response.ok) {
-                throw new Error(`Erro do servidor: ${response.statusText}`);
+                throw new Error(`Server error: ${response.statusText}`);
               }
 
               const data = await response.json();
               
               setChatHistory(prev => [...prev, { sender: 'agent', text: data.response }]);
-              setStatusMessage('Comunicação com o agente bem-sucedida!');
+              setStatusMessage('Communication with agent successful!');
               setMessageColor('text-green-600');
 
             } catch (error) {
-              console.error("Erro ao comunicar com o backend:", error);
-              setStatusMessage(`Erro: Não foi possível conectar com o agente. Detalhes: ${error.message}`);
+              console.error("Error communicating with backend:", error);
+              setStatusMessage(`Error: Could not connect to the agent. Details: ${error.message}`);
               setMessageColor('text-red-600');
-              setChatHistory(prev => [...prev, { sender: 'agent', text: 'Desculpe, não consegui processar a sua solicitação. Verifique se o backend está rodando.' }]);
+              setChatHistory(prev => [...prev, { sender: 'agent', text: 'Sorry, I could not process your request. Please check if the backend is running.' }]);
             }
           };
 
           return (
             <div className="bg-gray-100 min-h-screen p-4 flex flex-col items-center font-sans antialiased">
               <div className="w-full max-w-lg bg-white p-8 rounded-xl shadow-lg border border-gray-200">
-                <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Agente de Análise de Projetos</h1>
+                <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Project Analysis Agent</h1>
                 <p className="text-gray-600 text-center mb-8">
-                  Converse com o agente para analisar dados. Insira suas credenciais do Azure para começar.
+                  Chat with the agent to analyze data. Please provide your Azure credentials to begin.
                 </p>
 
-                {/* Formulário para a URL do backend */}
+                {/* Azure credentials form */}
                 <div className="space-y-6 mb-8 border p-4 rounded-lg bg-gray-50">
-                  <h2 className="text-lg font-semibold text-gray-700">URL do Backend</h2>
+                  <h2 className="text-lg font-semibold text-gray-700">Azure Credentials</h2>
                   <div>
-                    <label htmlFor="backendUrl" className="block text-gray-700 font-medium mb-1">URL do Cloud Run</label>
-                    <input
-                      type="text"
-                      id="backendUrl"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                      value={backendUrl}
-                      onChange={(e) => setBackendUrl(e.target.value)}
-                      placeholder="https://sua-url-do-cloudrun.run.app"
-                    />
-                  </div>
-                </div>
-
-                {/* Formulário para credenciais do Azure */}
-                <div className="space-y-6 mb-8 border p-4 rounded-lg bg-gray-50">
-                  <h2 className="text-lg font-semibold text-gray-700">Credenciais do Azure</h2>
-                  <div>
-                    <label htmlFor="accountName" className="block text-gray-700 font-medium mb-1">Conta de Armazenamento</label>
+                    <label htmlFor="accountName" className="block text-gray-700 font-medium mb-1">Storage Account Name</label>
                     <input
                       type="text"
                       id="accountName"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                       value={accountName}
                       onChange={(e) => setAccountName(e.target.value)}
-                      placeholder="Nome da sua conta de armazenamento"
+                      placeholder="Your storage account name"
                     />
                   </div>
                   <div>
-                    <label htmlFor="containerName" className="block text-gray-700 font-medium mb-1">Nome do Container</label>
+                    <label htmlFor="containerName" className="block text-gray-700 font-medium mb-1">Container Name</label>
                     <input
                       type="text"
                       id="containerName"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                       value={containerName}
                       onChange={(e) => setContainerName(e.target.value)}
-                      placeholder="Nome do seu container"
+                      placeholder="Your container name"
                     />
                   </div>
                   <div>
-                    <label htmlFor="sasToken" className="block text-gray-700 font-medium mb-1">Token SAS</label>
+                    <label htmlFor="sasToken" className="block text-gray-700 font-medium mb-1">SAS Token</label>
                     <input
                       type="text"
                       id="sasToken"
@@ -146,7 +130,7 @@
                   </div>
                 </div>
 
-                {/* Histórico do chat */}
+                {/* Chat history */}
                 <div className="bg-white border border-gray-300 rounded-lg p-4 h-80 overflow-y-auto mb-6 flex flex-col-reverse">
                   {[...chatHistory].reverse().map((msg, index) => (
                     <div key={index} className={`mb-4 flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -157,25 +141,25 @@
                   ))}
                 </div>
 
-                {/* Formulário de chat */}
+                {/* Chat form */}
                 <form onSubmit={handleSendMessage} className="flex space-x-2">
                   <input
                     type="text"
                     className="flex-grow px-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500"
                     value={currentMessage}
                     onChange={(e) => setCurrentMessage(e.target.value)}
-                    placeholder="Digite sua mensagem aqui..."
+                    placeholder="Type your message here..."
                   />
                   <button
                     type="submit"
                     className="bg-blue-600 text-white font-bold py-2 px-6 rounded-full hover:bg-blue-700 transition-colors duration-200"
-                    aria-label="Enviar mensagem"
+                    aria-label="Send message"
                   >
-                    Enviar
+                    Send
                   </button>
                 </form>
                 
-                {/* Mensagem de status */}
+                {/* Status message */}
                 {statusMessage && (
                   <div className="mt-4 text-center">
                     <p className={`font-semibold ${messageColor}`}>{statusMessage}</p>
