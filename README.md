@@ -1,84 +1,55 @@
-# Virtual Agent for Social Project Analysis
+### **Presenting the "Virtual Agent"**
 
-This project is a virtual agent with artificial intelligence technology, designed to analyze data from social projects stored in an Azure Blob Storage container. It uses the Gemini model to interpret natural language requests and execute data analysis functions, providing insights into the financial viability and social return of early childhood education initiatives.
+The "Virtual Agent for Social Project Analysis" is a project I developed to explore the potential of artificial intelligence in analyzing complex data. It uses the **Gemini** AI model to interpret natural language requests and provide insights into the financial viability and social return of early childhood education initiatives.
 
-<img width="1919" height="823" alt="image" src="https://github.com/user-attachments/assets/eb032cf8-948b-4966-bb95-ecd5c36a5056" />
+The main challenge was to integrate different technologies to create a complete solution: a robust **back-end** to process the data and an intuitive **front-end** for user interaction.
 
+---
 
-## Technologies Used
+### **Project Structure**
 
-The project consists of two main components: the backend (hosted on Google Cloud Run) and the frontend (a static web application).
+The project was divided into two main parts, each with its own function and technology.
 
-### Backend
+#### **Back-end: The Agent's Brain**
 
-Python 3.9: Main programming language.
-Flask: Web microframework to create the API that receives requests from the frontend.
-Google Gemini API: Used for conversational capabilities and tool execution.
-Azure Storage Blob SDK: Library for interacting with Azure Blob Storage, allowing data files to be read.
-Pandas: Library for data manipulation and analysis.
-python-dotenv: To load environment variables from a .env file.
-flask-cors: To manage the CORS (Cross-Origin Resource Sharing) security policy.
-Docker: To package the application and its dependencies into a container, facilitating deployment.
+The back-end is responsible for all the logic and data processing. It was built using:
 
-### Frontend
+* **Python 3.9:** The main language, chosen for its simplicity and power.
+* **Flask:** A Python micro-framework that allowed me to create a lightweight API to receive requests from the front-end.
+* **Google Gemini API:** The AI that lets the agent understand what the user is asking and respond intelligently.
+* **Pandas:** An essential library for manipulating and analyzing social project data.
+* **Docker:** To ensure the back-end environment was consistent and easy to deploy, the application was packaged into a Docker container.
 
-React: JavaScript library for building the user interface.
-Vite: Build tool for frontend development and packaging.
-GitHub Pages: Static page hosting service for the frontend.
-Tailwind CSS: CSS framework to style the interface.
+The source code is organized in the `virtual-agent` folder, with the following files:
+* `app.py`: Where all the API logic and Gemini integration are defined.
+* `requirements.txt`: A list of Python dependencies.
+* `Dockerfile`: Instructions for Docker to build the application image.
+* `GOOGLE_API_KEY.env`: A file to securely manage environment variables, such as API keys, without exposing them in the source code.
 
-### Project Structure
+#### **Front-end: The User Interface**
 
-app.py: The backend source code, which contains the API logic, tool definitions, and integration with the Gemini model.
-requirements.txt: Lists the necessary Python dependencies for the backend.
-Dockerfile: Instructions for creating the Docker image of the backend application.
-.env: File to securely store the Google API key (should not be uploaded to GitHub).
+The front-end is the interface the user sees and interacts with. It was developed with:
 
+* **React:** A JavaScript library for building a modular and efficient interface.
+* **Vite:** A build tool that speeds up front-end development and packaging.
+* **Tailwind CSS:** A framework for styling the interface quickly and consistently.
+* **GitHub Pages:** A hosting service I used to make the front-end publicly accessible.
 
-## How to Run
+The front-end structure is in the `virtual_agent_frontend` folder and includes the files:
+* `app.jsx`: The main user interface component.
+* `index.html`: The base HTML file.
 
+---
 
-### How to Run (Locally)
+### **Development and Deployment Process**
 
+The project followed a clear workflow, from conception to final deployment in the cloud.
 
-#### Clone the repository:
-git clone https://github.com/your-username/your-repository.git
-cd your-repository
+1.  **Initial Setup:** I created a GitHub repository (`virtual-agent`) to manage versioning and track project progress.
+2.  **Environment Configuration:** I set up a virtual environment for the back-end and installed all necessary dependencies, ensuring the project could run locally.
+3.  **Back-end Development:** I wrote the API code in `app.py`, defining the functionalities and tools the AI could use to interact with the data.
+4.  **Containerization:** To simplify deployment, I created a `Dockerfile` to package the back-end, including all dependencies, into a Docker image.
+5.  **Cloud Deployment:** The Docker container was deployed on **Google Cloud Run**, a serverless compute service. This allowed me to host the back-end in a scalable way without worrying about server management.
+6.  **Front-end Connection:** The front-end was configured to communicate with the public URL provided by Google Cloud Run, linking the two parts of the project.
 
-
-#### Create the virtual environment and install dependencies:
-python -m venv venv
-source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
-pip install -r requirements.txt
-
-
-#### Create a .env file:
-Create a .env file in the project root and add your Google API key.
-GOOGLE_API_KEY=YOUR_KEY_HERE
-
-
-#### Run the backend:
-python app.py
-
-
-The server will be running at http://localhost:8080.
-
-
-### How to Deploy on Google Cloud Run
-
-
-#### Install the Google Cloud SDK: 
-Follow the official Google instructions.
-
-#### Authenticate:
-gcloud auth login
-gcloud config set project YOUR_PROJECT_ID
-
-
-#### Deploy the service:
-gcloud run deploy virtualagent --source . --region=europe-west10
-
-
-The command will build the Docker image and deploy the service to Cloud Run. At the end, it will provide the public URL of your service.
-Frontend Configuration:
-On your frontend, update the backend URL with the address provided by Google Cloud Run so that communication works correctly.
+The result is a functional application where the user can interact with an AI to get detailed analyses and help with decision-making for social projects.
